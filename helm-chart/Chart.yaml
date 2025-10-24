@@ -1,0 +1,10 @@
+apiVersion: v2
+name: fullstack-app
+description: ReactJS-Spring-Boot CRUD Application with MariaDB
+version: 0.1.0
+appVersion: "1.0"
+keywords:
+  - fullstack
+  - react
+  - springboot
+  - mariadb

@@ -1,27 +1,50 @@
 import axios from 'axios';
 
-const EMPLOYEE_API_BASE_URL = "http://localhost:8080/api/v1/employees";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8080/api/v1";
+
+// Configure axios with security headers
+const apiClient = axios.create({
+    baseURL: API_BASE_URL,
+    timeout: 10000,
+    headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+    },
+    withCredentials: true
+});
+
+// Add request interceptor for CSRF protection
+apiClient.interceptors.request.use(
+    (config) => {
+        const token = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+        if (token) {
+            config.headers['X-CSRF-TOKEN'] = token;
+        }
+        return config;
+    },
+    (error) => Promise.reject(error)
+);
 
 class EmployeeService {
 
     getEmployees(){
-        return axios.get(EMPLOYEE_API_BASE_URL);
+        return apiClient.get('/employees');
     }
 
     createEmployee(employee){
-        return axios.post(EMPLOYEE_API_BASE_URL, employee);
+        return apiClient.post('/employees', employee);
     }
 
     getEmployeeById(employeeId){
-        return axios.get(EMPLOYEE_API_BASE_URL + '/' + employeeId);
+        return apiClient.get(`/employees/${employeeId}`);
     }
 
     updateEmployee(employee, employeeId){
-        return axios.put(EMPLOYEE_API_BASE_URL + '/' + employeeId, employee);
+        return apiClient.put(`/employees/${employeeId}`, employee);
     }
 
     deleteEmployee(employeeId){
-        return axios.delete(EMPLOYEE_API_BASE_URL + '/' + employeeId);
+        return apiClient.delete(`/employees/${employeeId}`);
     }
 }
 

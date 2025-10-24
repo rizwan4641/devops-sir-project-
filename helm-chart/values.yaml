@@ -1,0 +1,19 @@
+backend:
+  image: springboot-backend:latest
+  port: 8080
+  replicas: 1
+
+frontend:
+  image: react-frontend:latest
+  port: 80
+  replicas: 1
+
+mariadb:
+  image: mariadb:10.6
+  port: 3306
+  rootPassword: rootpassword
+  database: employee_management_system
+  username: appuser
+  password: apppassword
+  storage: 8Gi
+  storageClass: gp2
